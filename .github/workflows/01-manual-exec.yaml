@@ -34,10 +34,6 @@ jobs:
       - name: Instalando dependências
         run: yarn
 
-      #instalação das dependências
-      - name: Instalando dependências
-        run: yarn
-
       #instalação do Playwright
       - name: Instalando Playwright
         run: yarn playwright install

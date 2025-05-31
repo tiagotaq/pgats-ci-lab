@@ -1,0 +1,17 @@
+image: node:22
+
+stages:
+  - test
+
+e2e-tests:
+  stage: test
+  before_script:
+    - corepack enable
+    - yarn install
+    - yarn playwright install
+    - yarn playwright install-deps
+  script:
+    - yarn run e2e
+  rules:
+    - when: manual
+
