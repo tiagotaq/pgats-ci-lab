@@ -53,8 +53,23 @@ jobs:
             -d parse_mode="Markdown" \
             -d text="$MESSAGE"
       
-      - name: Discord notification
-        uses: cl8dep/action-discord@v0
-        with:
-         webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
-         message: 'Testando envio de mensagem para o Discord'
+      - name: Enviar mensagem no Discord
+        if: always()
+        run: |
+          STATUS="${{ job.status }}"
+          COLOR=3066993 # verde (padrão)
+
+          if [ "$STATUS" = "failure" ]; then
+            COLOR=15158332 # vermelho
+          fi
+
+          curl -X POST -H "Content-Type: application/json" \
+          -d "{
+            \"username\": \"GitHub Actions\",
+            \"embeds\": [{
+              \"title\": \"🚀 CI finalizado\",
+              \"description\": \"Status: **${STATUS}**\nRepositório: \`${{ github.repository }}\`\nBranch: \`${{ github.ref_name }}\`\nCommit: \`${{ github.sha }}\`\",
+              \"color\": ${COLOR}
+            }]
+          }" \
+          ${{ secrets.DISCORD_WEBHOOK_URL }}
