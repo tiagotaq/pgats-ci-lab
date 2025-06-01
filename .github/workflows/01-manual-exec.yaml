@@ -42,14 +42,6 @@ jobs:
       - name: Executando testes e2e
         run: yarn run e2e
 
-      - name: notification
-        if: cancelled() == false
-        uses: xinthink/action-telegram@v1.1
-        with:
-          botToken: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          chatId: ${{ secrets.TELEGRAM_CHAT_ID }}
-          jobStatus: ${{ job.status }}
-
       - name: Enviar mensagem no Telegram
         if: always()
         run: |
@@ -60,3 +52,9 @@ jobs:
             -d chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" \
             -d parse_mode="Markdown" \
             -d text="$MESSAGE"
+      
+      - name: Discord notification
+        uses: cl8dep/action-discord@v0
+        with:
+         webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
+         message: 'Testando envio de mensagem para o Discord'
