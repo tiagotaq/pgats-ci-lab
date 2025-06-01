@@ -42,9 +42,10 @@ jobs:
       - name: Executando testes e2e
         run: yarn run e2e
 
-      - name: Notificando status do job
-        uses: VanyaMate/github-action-telegram-notification@v0.1
+      - name: notification
+        if: cancelled() == false
+        uses: xinthink/action-telegram@v1.1
         with:
-          success: ${{ job.status }}
-          tg_bot_token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          tg_chat_id: ${{ secrets.TELEGRAM_CHAT_ID }}
+          botToken: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          chatId: ${{ secrets.TELEGRAM_CHAT_ID }}
+          jobStatus: ${{ job.status }}
