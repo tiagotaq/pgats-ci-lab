@@ -12,6 +12,4 @@ e2e-tests:
     - yarn playwright install-deps
   script:
     - yarn run e2e
-  rules:
-    - when: manual
 
