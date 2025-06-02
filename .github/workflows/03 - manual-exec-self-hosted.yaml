@@ -1,0 +1,75 @@
+#CI de Nível 01 - Disparo manual a partir de 1 clique
+
+#nome do nosso 'pipeline'
+name: 'Execução Manual (Self Hosted)'
+
+# regras de disparo (gatilhos/triggers)
+# gatilho de exec manual = workflow_dispatch
+
+on: 
+  workflow_dispatch:
+
+# trabalhos/tarefas dentro do pipeline = jobs
+jobs: 
+  e2e-tests:
+
+  #maquina que o job vai executar
+    runs-on: self-hosted
+
+    # passos do script de build
+    steps:
+      #clone do projeto
+      - uses: actions/checkout@v4
+
+      #instalação do node
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+
+      #instalação do Yarn
+      - name: Instalando Yarn
+        run: npm install -g yarn
+      
+      #instalação das dependências
+      - name: Instalando dependências
+        run: yarn
+
+      #instalação do Playwright
+      - name: Instalando Playwright
+        run: yarn playwright install
+
+      #executar os testes e2e
+      - name: Executando testes e2e
+        run: yarn run e2e
+
+      - name: Enviar mensagem no Telegram
+        if: always()
+        run: |
+          STATUS="${{ job.status }}"
+          MESSAGE="🚀 CI finalizado com status: *${STATUS}*%0ARepositório: ${{ github.repository }}%0ABranch: ${{ github.ref_name }}%0ACommit: ${{ github.sha }}"
+          
+          curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
+            -d chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" \
+            -d parse_mode="Markdown" \
+            -d text="$MESSAGE"
+      
+      - name: Enviar mensagem no Discord
+        if: always()
+        run: |
+          STATUS="${{ job.status }}"
+          COLOR=3066993 # verde (padrão)
+
+          if [ "$STATUS" = "failure" ]; then
+            COLOR=15158332 # vermelho
+          fi
+
+          curl -X POST -H "Content-Type: application/json" \
+          -d "{
+            \"username\": \"GitHub Actions\",
+            \"embeds\": [{
+              \"title\": \"🚀 CI finalizado\",
+              \"description\": \"Status: **${STATUS}**\nRepositório: \`${{ github.repository }}\`\nBranch: \`${{ github.ref_name }}\`\nCommit: \`${{ github.sha }}\`\",
+              \"color\": ${COLOR}
+            }]
+          }" \
+          ${{ secrets.DISCORD_WEBHOOK_URL }}
