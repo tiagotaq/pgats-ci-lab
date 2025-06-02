@@ -63,19 +63,25 @@ jobs:
         run: |
           $status = "${{ job.status }}"
           $color = 3066993
-
           if ($status -eq "failure") {
             $color = 15158332
           }
 
+          $embed = @{
+            title = "🚀 CI finalizado"
+            description = "Status: **$status**`nRepositório: `${{ github.repository }}``nBranch: `${{ github.ref_name }}``nCommit: `${{ github.sha }}`"
+            color = $color
+          }
+
           $payload = @{
             username = "GitHub Actions"
-            embeds = @(@{
-              title = "🚀 CI finalizado"
-              description = "Status: **$status**`nRepositório: `${{ github.repository }}``nBranch: `${{ github.ref_name }}``nCommit: `${{ github.sha }}`"
-              color = $color
-            })
+            embeds = @($embed)
           } | ConvertTo-Json -Depth 3
 
-          Invoke-RestMethod -Uri "${{ secrets.DISCORD_WEBHOOK_URL }}" -Method POST -ContentType "application/json" -Body $payload
+          Invoke-RestMethod `
+            -Uri "${{ secrets.DISCORD_WEBHOOK_URL }}" `
+            -Method POST `
+            -ContentType "application/json" `
+            -Body $payload
+
 
