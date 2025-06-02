@@ -44,7 +44,7 @@ jobs:
 
       - name: Enviar mensagem no Telegram
         if: always()
-        shell: pwsh
+        shell: powershell
         run: |
           $status = "${{ job.status }}"
           $message = "🚀 CI finalizado com status: *$status*`nRepositório: ${{ github.repository }}`nBranch: ${{ github.ref_name }}`nCommit: ${{ github.sha }}"
@@ -59,7 +59,7 @@ jobs:
       
       - name: Enviar mensagem no Discord
         if: always()
-        shell: pwsh
+        shell: powershell
         run: |
           $status = "${{ job.status }}"
           $color = 3066993
