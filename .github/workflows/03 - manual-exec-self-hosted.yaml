@@ -68,20 +68,21 @@ jobs:
           }
 
           $json = @"
-      {
-        "username": "GitHub Actions",
-        "embeds": [{
-          "title": "🚀 CI finalizado",
-          "description": "Status: **$status**\nRepositório: `${{ github.repository }}`\nBranch: `${{ github.ref_name }}`\nCommit: `${{ github.sha }}`",
-          "color": $color
-        }]
-      }
-      "@
+          {
+            "username": "GitHub Actions",
+            "embeds": [{
+              "title": "🚀 CI finalizado",
+              "description": "Status: **$status**\nRepositório: `${{ github.repository }}`\nBranch: `${{ github.ref_name }}`\nCommit: `${{ github.sha }}`",
+              "color": $color
+            }]
+          }
+          "@
 
           Invoke-RestMethod `
             -Uri "${{ secrets.DISCORD_WEBHOOK_URL }}" `
             -Method POST `
             -ContentType "application/json" `
             -Body $json
+
 
 
