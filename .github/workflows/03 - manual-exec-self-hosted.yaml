@@ -44,6 +44,7 @@ jobs:
 
       - name: Enviar mensagem no Telegram
         if: always()
+        shell: bash
         run: |
           STATUS="${{ job.status }}"
           MESSAGE="🚀 CI finalizado com status: *${STATUS}*%0ARepositório: ${{ github.repository }}%0ABranch: ${{ github.ref_name }}%0ACommit: ${{ github.sha }}"
@@ -55,6 +56,7 @@ jobs:
       
       - name: Enviar mensagem no Discord
         if: always()
+        shell: bash
         run: |
           STATUS="${{ job.status }}"
           COLOR=3066993 # verde (padrão)
