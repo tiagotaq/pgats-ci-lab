@@ -67,21 +67,21 @@ jobs:
             $color = 15158332
           }
 
-          $embed = @{
-            title = "🚀 CI finalizado"
-            description = "Status: **$status**`nRepositório: `${{ github.repository }}``nBranch: `${{ github.ref_name }}``nCommit: `${{ github.sha }}`"
-            color = $color
-          }
-
-          $payload = @{
-            username = "GitHub Actions"
-            embeds = @($embed)
-          } | ConvertTo-Json -Depth 3
+          $json = @"
+      {
+        "username": "GitHub Actions",
+        "embeds": [{
+          "title": "🚀 CI finalizado",
+          "description": "Status: **$status**\nRepositório: `${{ github.repository }}`\nBranch: `${{ github.ref_name }}`\nCommit: `${{ github.sha }}`",
+          "color": $color
+        }]
+      }
+      "@
 
           Invoke-RestMethod `
             -Uri "${{ secrets.DISCORD_WEBHOOK_URL }}" `
             -Method POST `
             -ContentType "application/json" `
-            -Body $payload
+            -Body $json
 
 
