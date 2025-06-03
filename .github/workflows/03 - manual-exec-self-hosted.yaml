@@ -56,25 +56,6 @@ jobs:
               parse_mode = "Markdown"
               text = $message
             }
-      
-      - name: Enviar mensagem no Discord
-        if: always()
-        shell: powershell
-        run: |
-          $status = "${{ job.status }}"
-          $message = "🚀 CI finalizado com status: *$status*"
-
-          $payload = @{
-            content = $message
-          }
-
-          $json = $payload | ConvertTo-Json -Compress -Depth 10
-
-          Invoke-RestMethod `
-            -Uri "${{ secrets.DISCORD_WEBHOOK_URL }}" `
-            -Method POST `
-            -ContentType "application/json" `
-            -Body $json
 
 
 
