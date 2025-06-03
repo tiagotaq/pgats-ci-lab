@@ -59,7 +59,7 @@ jobs:
       
       - name: Enviar mensagem no Discord
         if: always()
-        shell: powershell
+        shell: pwsh
         run: |
           $status = "${{ job.status }}"
           $color = 3066993
@@ -67,22 +67,25 @@ jobs:
             $color = 15158332
           }
 
-          $json = @"
-          {
-            "username": "GitHub Actions",
-            "embeds": [{
-              "title": "🚀 CI finalizado",
-              "description": "Status: **$status**\nRepositório: `${{ github.repository }}`\nBranch: `${{ github.ref_name }}`\nCommit: `${{ github.sha }}`",
-              "color": $color
-            }]
+          $payload = @{
+            username = "GitHub Actions"
+            embeds = @(
+              @{
+                title = "🚀 CI finalizado"
+                description = "Status: **$status**`nRepositório: `${{ github.repository }}`nBranch: `${{ github.ref_name }}`nCommit: `${{ github.sha }}`"
+                color = $color
+              }
+            )
           }
-          "@
+
+          $json = $payload | ConvertTo-Json -Depth 4 -Compress
 
           Invoke-RestMethod `
             -Uri "${{ secrets.DISCORD_WEBHOOK_URL }}" `
             -Method POST `
             -ContentType "application/json" `
             -Body $json
+
 
 
 
