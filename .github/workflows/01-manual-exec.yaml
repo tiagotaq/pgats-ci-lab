@@ -6,14 +6,13 @@ name: 'Execução Manual'
 # regras de disparo (gatilhos/triggers)
 # gatilho de exec manual = workflow_dispatch
 
-on: 
+on:
   workflow_dispatch:
 
 # trabalhos/tarefas dentro do pipeline = jobs
-jobs: 
+jobs:
   e2e-tests:
-
-  #maquina que o job vai executar
+    #maquina que o job vai executar
     runs-on: ubuntu-latest
 
     # passos do script de build
@@ -29,7 +28,7 @@ jobs:
       #instalação do Yarn
       - name: Instalando Yarn
         run: npm install -g yarn
-      
+
       #instalação das dependências
       - name: Instalando dependências
         run: yarn
@@ -47,12 +46,12 @@ jobs:
         run: |
           STATUS="${{ job.status }}"
           MESSAGE="🚀 CI finalizado com status: *${STATUS}*%0ARepositório: ${{ github.repository }}%0ABranch: ${{ github.ref_name }}%0ACommit: ${{ github.sha }}"
-          
+
           curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
             -d chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" \
             -d parse_mode="Markdown" \
             -d text="$MESSAGE"
-      
+
       - name: Enviar mensagem no Discord
         if: always()
         run: |

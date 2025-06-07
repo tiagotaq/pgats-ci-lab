@@ -8,18 +8,16 @@ name: 'Execução por Deploy'
 # gatilho de exec agendada = shcedule
 # gatilho de exec a partir de outro pipe = worflow_run
 
-on: 
+on:
   workflow_run:
     workflows: ['Execução Manual']
     types:
       - completed
 
-
 # trabalhos/tarefas dentro do pipeline = jobs
-jobs: 
+jobs:
   e2e-tests:
-
-  #maquina que o job vai executar
+    #maquina que o job vai executar
     runs-on: ubuntu-latest
 
     # condicional - if
@@ -41,7 +39,7 @@ jobs:
       #instalação do Yarn
       - name: Instalando Yarn
         run: npm install -g yarn
-      
+
       #instalação das dependências
       - name: Instalando dependências
         run: yarn

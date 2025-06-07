@@ -6,14 +6,13 @@ name: 'Execução Manual (Self Hosted)'
 # regras de disparo (gatilhos/triggers)
 # gatilho de exec manual = workflow_dispatch
 
-on: 
+on:
   workflow_dispatch:
 
 # trabalhos/tarefas dentro do pipeline = jobs
-jobs: 
+jobs:
   e2e-tests:
-
-  #maquina que o job vai executar
+    #maquina que o job vai executar
     runs-on: self-hosted
 
     # passos do script de build
@@ -29,7 +28,7 @@ jobs:
       #instalação do Yarn
       - name: Instalando Yarn
         run: npm install -g yarn
-      
+
       #instalação das dependências
       - name: Instalando dependências
         run: yarn
@@ -48,7 +47,7 @@ jobs:
         run: |
           $status = "${{ job.status }}"
           $message = "🚀 CI finalizado com status: *$status*`nRepositório: ${{ github.repository }}`nBranch: ${{ github.ref_name }}`nCommit: ${{ github.sha }}"
-          
+
           Invoke-RestMethod -Uri "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" `
             -Method Post `
             -Body @{
@@ -56,8 +55,3 @@ jobs:
               parse_mode = "Markdown"
               text = $message
             }
-
-
-
-
-

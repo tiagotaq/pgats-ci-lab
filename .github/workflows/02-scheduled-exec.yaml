@@ -6,16 +6,14 @@ name: 'Execução Agendada'
 # regras de disparo (gatilhos/triggers)
 # gatilho de exec manual = workflow_dispatch
 
-on: 
+on:
   schedule:
-    - cron: '0 6 * * 1' #formato cron  
-
+    - cron: '0 6 * * 1' #formato cron
 
 # trabalhos/tarefas dentro do pipeline = jobs
-jobs: 
+jobs:
   e2e-tests:
-
-  #maquina que o job vai executar
+    #maquina que o job vai executar
     runs-on: ubuntu-latest
 
     # passos do script de build
@@ -31,7 +29,7 @@ jobs:
       #instalação do Yarn
       - name: Instalando Yarn
         run: npm install -g yarn
-      
+
       #instalação das dependências
       - name: Instalando dependências
         run: yarn
